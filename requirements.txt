@@ -10,6 +10,7 @@ contourpy==1.0.6
 cycler==0.11.0
 cymem==2.0.7
 Cython==0.29.28
+dj-database-url==1.0.0
 Django==4.1.4
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.4.1/en_core_web_sm-3.4.1-py3-none-any.whl
 fonttools==4.38.0
@@ -30,6 +31,7 @@ packaging==22.0
 pathy==0.10.1
 Pillow==9.3.0
 preshed==3.0.8
+psycopg2==2.9.5
 pydantic==1.10.2
 pyparsing==3.0.9
 python-dateutil==2.8.2
