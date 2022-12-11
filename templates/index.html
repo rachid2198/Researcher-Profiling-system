@@ -1,0 +1,329 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Glory:wght@400&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      body {
+        background-image: url("{% static 'wallpaper.png' %}");
+        font-family: "Glory", sans-serif;
+        font-size: 20px;
+      }
+
+      .container {
+        background-color: white;
+        box-shadow: lightgray 0px 0px 5px;
+      }
+
+      .content-a {
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+      }
+      form {
+        padding: 20px;
+      }
+      form .row {
+        margin-bottom: 20px;
+      }
+      form label {
+        font-size: 16px;
+      }
+      form button {
+        width: 100%;
+      }
+
+      .content-b {
+        width: 60%;
+        padding: 15px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        text-align: center;
+      }
+      .content-b .opt-coh {
+        font-weight: bold;
+      }
+      .content-b button {
+        width: 200px;
+      }
+
+      .content-c {
+        border-radius: 20px;
+      }
+      .content-c .col {
+        padding: 0;
+      }
+      h3 {
+        padding-bottom: 20px;
+        margin: 0 20px;
+        border-bottom: 1px solid black;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      table th {
+        font-weight: bold;
+        text-align: center;
+      }
+      table td {
+        text-align: center;
+      }
+      .uncenterize {
+        text-align: left;
+      }
+      .progress {
+        width: 100%;
+        height: 20px;
+        margin-top: 5px;
+      }
+
+      .img-show {
+        margin: 20px;
+      }
+      .img-show img {
+        box-shadow: gray 0px 0px 5px;
+        border-radius: 5px;
+      }
+      .title-show {
+        padding-left: 20px;
+        font-size: 22px;
+        font-weight: bold;
+      }
+    </style>
+
+    <title>WEB APP</title>
+  </head>
+  <body>
+    <div class="container content-a">
+      <br />
+      <h3>Please Fill The Parameters Below</h3>
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row">
+          <div class="col-6">
+            <label for="docs">Choose your Research Documents</label>
+            <input
+              type="file"
+              multiple
+              name="docs"
+              id="docs"
+              class="form-control"
+            />
+          </div>
+
+          <div class="col-6">
+            <label for="topics-nb">Number of LDA Topics</label>
+            <input
+              type="text"
+              name="topics-nb"
+              id="topics-nb"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <label for="tagme-th">TagMe Score Threshold</label>
+            <input
+              type="text"
+              name="tagme-th"
+              id="tagme-th"
+              class="form-control"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="col-3"></div>
+          <div class="col-3">
+            <label for="docs"></label>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <br />
+
+    {% if coherence %}
+      <div class="container content-b">
+        <div class="row">
+          <div class="col">
+            <span class="opt-coh">Degrés de Cohérence : </span>{{ coherence }}
+          </div>
+        </div>
+        <hr />
+
+        <div class="row">
+          <div class="col">
+            <button
+              class="btn btn-primary"
+              id="subjectsBtn"
+              onclick="onSubjects()"
+            >
+              Subjects Results
+            </button>
+          </div>
+          <div class="col">
+            <button
+              class="btn btn-secondary"
+              id="wordCloudsBtn"
+              onclick="onWordClouds()"
+            >
+              LDA Word Clouds
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container content-c" id="subjectsDiv" style="display: block">
+        <br />
+        <h3>Subjects Results</h3>
+
+        <div class="row">
+          <div class="col">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Subject</th>
+                  <th>Count</th>
+                  <th>Doc. Count</th>
+                  <th style="width: 200px">Score</th>
+                </tr>
+              </thead>
+
+              <tbody id="table-content">
+                {% for result in results %}
+                <tr>
+                  <td>{{ result.0 }}</td>
+                  <td class="uncenterize">{{ result.1 }}</td>
+                  <td>{{ result.2 }}</td>
+                  <td>{{ result.3 }}</td>
+                  <td>
+                    <div class="progress">
+                      {% if result.4 > 66 %}
+                      <div class="progress-bar bg-success"
+                      {% elif result.4 > 33 and result.4 <= 66 %}
+                      <div class="progress-bar bg-warning"
+                      {% else %}
+                      <div class="progress-bar bg-danger"
+                      {% endif %}
+                        
+                        role="progressbar"
+                        style="width:{{ result.4 }}%"
+                        aria-valuenow="{{ result.4 }}"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >{{ result.4 }}</div>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br />
+      </div>
+
+      <div class="container content-c" id="wordCloudsDiv" style="display: none">
+        <br />
+        <h3>LDA Word Clouds</h3>
+
+        {% if sal_img %}
+          <div class="row img-show">
+            <div class="col">
+              <p class="title-show">Most Salient Words</p>
+              <img src="{{ sal_img }}" style="width: 100%" />
+            </div>
+          </div>
+
+          <hr style="margin: 30px -12px 0 -12px" />
+
+          {% for img in imgs %}
+          <div class="row img-show">
+            <div class="col">
+              <p class="title-show">Topic {{ img.1 }}</p>
+              <img src="{{ img.0 }}" style="width: 100%" />
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+
+        <br />
+      </div>
+    {% endif %}
+
+    <br />
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      function onSubjects() {
+        document.getElementById("subjectsDiv").style.display = "block";
+        document.getElementById("wordCloudsDiv").style.display = "none";
+
+        if (
+          document
+            .getElementById("subjectsBtn")
+            .classList.contains("btn-secondary")
+        ) {
+          document
+            .getElementById("wordCloudsBtn")
+            .classList.remove("btn-primary");
+          document
+            .getElementById("wordCloudsBtn")
+            .classList.add("btn-secondary");
+          document
+            .getElementById("subjectsBtn")
+            .classList.remove("btn-secondary");
+          document.getElementById("subjectsBtn").classList.add("btn-primary");
+        }
+      }
+
+      function onWordClouds() {
+        document.getElementById("wordCloudsDiv").style.display = "block";
+        document.getElementById("subjectsDiv").style.display = "none";
+
+        if (
+          document
+            .getElementById("wordCloudsBtn")
+            .classList.contains("btn-secondary")
+        ) {
+          document
+            .getElementById("subjectsBtn")
+            .classList.remove("btn-primary");
+          document.getElementById("subjectsBtn").classList.add("btn-secondary");
+          document
+            .getElementById("wordCloudsBtn")
+            .classList.remove("btn-secondary");
+          document.getElementById("wordCloudsBtn").classList.add("btn-primary");
+        }
+      }
+    </script>
+  </body>
+</html>
