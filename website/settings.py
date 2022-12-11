@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ju1^zh5^lz_2$e7#8*9o^b2-3p8()lq32=skql+dnb(8u)dtff
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://researcher-profiling-system.up.railway.app']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -129,4 +129,4 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS= True
+CSRF_TRUSTED_ORIGINS = ['https://researcher-profiling-system.up.railway.app']
