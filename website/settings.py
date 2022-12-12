@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import dj_database_url
+#import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +28,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -79,11 +79,7 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-DATABASES = {
-    "default": dj_database_url.config(default=DATABASE_URL, conn_max_age=1800),
-}
+DATABASES = {}
 
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
@@ -140,4 +136,4 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ['https://researcher-profiling-system.up.railway.app',"http://127.0.0.1:8000"]
+CSRF_TRUSTED_ORIGINS = ['https://researcher-profiling-system.onrender.com',"http://127.0.0.1:8000"]
