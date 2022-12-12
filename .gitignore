@@ -8,3 +8,4 @@ myenv/
 *.pyc
 db.sqlite3
 staticfiles/
+static/
