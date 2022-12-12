@@ -19,6 +19,9 @@ def text_preprocess(texts):
     import spacy
     import gensim
     from gensim.utils import simple_preprocess
+
+    import nltk
+    nltk.download('stopwords')
     
     # NLTK Stop words
     stop_words = stopwords.words('english')
